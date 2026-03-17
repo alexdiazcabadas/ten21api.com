@@ -501,11 +501,21 @@ function submitGate(){
 
   // Log to Google Sheets
   if(SHEETS_WEBHOOK !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE'){
-    fetch(SHEETS_WEBHOOK, {
-      method: 'POST', mode: 'no-cors',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ name, email, company, timestamp: new Date().toISOString(), source: 'ten21api.com/demo' })
-    }).catch(()=>{});
+    const _form = document.createElement('form');
+    _form.method = 'POST';
+    _form.action = SHEETS_WEBHOOK;
+    _form.target = 'hidden_iframe';
+    const _input = document.createElement('input');
+    _input.type = 'hidden';
+    _input.name = 'data';
+    _input.value = JSON.stringify({ name, email, company, timestamp: new Date().toISOString(), source: 'ten21api.com/demo' });
+    _form.appendChild(_input);
+    document.body.appendChild(_form);
+    const _iframe = document.createElement('iframe');
+    _iframe.name = 'hidden_iframe';
+    _iframe.style.display = 'none';
+    document.body.appendChild(_iframe);
+    _form.submit();
   }
 
   document.getElementById('gateForm').style.display = 'none';
